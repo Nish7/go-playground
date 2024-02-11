@@ -2,6 +2,12 @@ package structs
 
 import "testing"
 
+type Test struct {
+		name  string
+		shape Shape
+		want  float64
+	}
+
 func TestPerimeter(t *testing.T) {
 	rectangle := Rectangle{10.0, 10.0}
 	got := rectangle.Perimeter()
@@ -13,13 +19,9 @@ func TestPerimeter(t *testing.T) {
 }
 
 func TestArea(t *testing.T) {
-	areaTests := []struct {
-		name  string
-		shape Shape
-		want  float64
-	}{
+	areaTests := []Test {
 		{"Rectangle", Rectangle{Width: 12, Height: 6}, 72.0},
-		{"Circle", Circle{Radius: 10}, 14},
+		{"Circle", Circle{Radius: 10}, 314},
 		{"Triangle", Triangle{Base: 10, Height: 10}, 50},
 	}
 
