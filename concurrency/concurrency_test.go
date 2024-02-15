@@ -7,11 +7,7 @@ import (
 )
 
 func mockWebsiteChecker(url string) bool {
-	if url == "wat:nishil.html" {
-		return false
-	}
-
-	return true
+	return url != "wat:nishil.html"
 }
 
 func slowStubWebChecker(url string) bool {
