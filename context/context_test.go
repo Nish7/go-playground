@@ -2,11 +2,31 @@ package context
 
 import (
 	"context"
+	"errors"
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 	"time"
 )
+
+type SpuResponseWriter struct {
+	written bool
+}
+
+func (s *SpuResponseWriter) Header() http.Header {
+	s.written = true
+	return nil
+}
+
+func (s *SpuResponseWriter) Write([]byte) (int, error) {
+	s.written = true
+	return 0, errors.New("not implemented")
+}
+
+func (s *SpuResponseWriter) WriteHeader(statusCode int) {
+	s.written = true
+}
 
 type StubStore struct {
 	response  string
@@ -14,9 +34,31 @@ type StubStore struct {
 	t         *testing.T
 }
 
-func (s *StubStore) Fetch() string {
-	time.Sleep(100 * time.Millisecond)
-	return s.response
+func (s *StubStore) Fetch(ctx context.Context) (string, error) {
+	data := make(chan string, 1)
+	go func() {
+		var result string
+
+		for _, c := range s.response {
+			select {
+			case <-ctx.Done():
+				log.Println("spy store got cancelled")
+				return
+			default:
+				time.Sleep(10 * time.Millisecond)
+				result += string(c)
+			}
+		}
+
+		data <- result
+	}()
+
+	select {
+	case <-ctx.Done():
+		return "", ctx.Err()
+	case res := <-data:
+		return res, nil
+	}
 }
 
 func (s *StubStore) assertWasCancelled() {
@@ -45,7 +87,6 @@ func TestServer(t *testing.T) {
 		svr := Server(store)
 
 		request := httptest.NewRequest(http.MethodGet, "/", nil)
-
 		response := httptest.NewRecorder()
 
 		svr.ServeHTTP(response, request)
@@ -54,7 +95,7 @@ func TestServer(t *testing.T) {
 			t.Errorf("got %s, wanted %s", response.Body.String(), data)
 		}
 
-		store.assertWasNotCancelled()
+		// store.assertWasNotCancelled()
 	})
 
 	t.Run("tells store to cancel work if request is cancelled", func(t *testing.T) {
@@ -71,16 +112,18 @@ func TestServer(t *testing.T) {
 
 		request = request.WithContext(cancellingCtx)
 
-		// this runs ayncrnous on a go routine
+		// this runs async on a go routine
 		time.AfterFunc(5*time.Millisecond, cancel)
 
-		response := httptest.NewRecorder()
+		response := &SpuResponseWriter{}
 		//  mocks an response writer interface, so it can capture when handler writes to it, allowing
 		// us to inspect and verify
 		// this way of testing is dependecy injection
 
 		svr.ServeHTTP(response, request)
 
-		store.assertWasCancelled()
+		if response.written {
+			t.Error("A response should have not been written")
+		}
 	})
 }
