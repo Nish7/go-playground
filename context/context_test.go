@@ -44,10 +44,9 @@ func TestServer(t *testing.T) {
 		store := &StubStore{response: data, t: t}
 		svr := Server(store)
 
-		request := httptest.NewRequest(http.MethodGet, "/", nil) // mocks the request object to be sent to mock server
+		request := httptest.NewRequest(http.MethodGet, "/", nil)
 
-		response := httptest.NewRecorder() //  mocks an response writer interface, so it can capture when handler writes to it, allowing us to inspect anad verify
-		// this way of testing is dependecy injection
+		response := httptest.NewRecorder()
 
 		svr.ServeHTTP(response, request)
 
@@ -55,7 +54,7 @@ func TestServer(t *testing.T) {
 			t.Errorf("got %s, wanted %s", response.Body.String(), data)
 		}
 
-		store.assertWasCancelled()
+		store.assertWasNotCancelled()
 	})
 
 	t.Run("tells store to cancel work if request is cancelled", func(t *testing.T) {
@@ -81,10 +80,6 @@ func TestServer(t *testing.T) {
 		// this way of testing is dependecy injection
 
 		svr.ServeHTTP(response, request)
-
-		if response.Body.String() != data {
-			t.Errorf("got %s, wanted %s", response.Body.String(), data)
-		}
 
 		store.assertWasCancelled()
 	})
