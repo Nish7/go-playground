@@ -40,17 +40,26 @@ var cases = []struct {
 	{Arabic: 798, Roman: "DCCXCVIII"},
 }
 
-func TestRomanNumerals(t *testing.T) {
+func TestFromArabicToRoman(t *testing.T) {
+	for _, test := range cases {
+		t.Run(fmt.Sprintf("%d get converted to to %q", test.Arabic, test.Roman), func(t *testing.T) {
+			got := ConvertToRoman(test.Arabic)
 
-	t.Run("Convert from arabic to Roman", func(t *testing.T) {
-		for _, test := range cases {
-			t.Run(fmt.Sprintf("%d get converted to to %q", test.Arabic, test.Roman), func(t *testing.T) {
-				got := ConvertToRoman(test.Arabic)
+			if got != test.Roman {
+				t.Errorf("got %q, wanted %q", got, test.Roman)
+			}
+		})
+	}
+}
 
-				if got != test.Roman {
-					t.Errorf("got %q, wanted %q", got, test.Roman)
-				}
-			})
-		}
-	})
+func TestFromRomanToArabic(t *testing.T) {
+	for _, test := range cases {
+		t.Run(fmt.Sprintf("%q get converted to to %d", test.Roman, test.Arabic), func(t *testing.T) {
+			got := ConvertToArabic(test.Roman)
+
+			if got != test.Arabic {
+				t.Errorf("got %q, wanted %q", got, test.Arabic)
+			}
+		})
+	}
 }

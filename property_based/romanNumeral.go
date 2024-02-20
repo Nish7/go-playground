@@ -1,6 +1,8 @@
 package propertybased
 
-import "strings"
+import (
+	"strings"
+)
 
 type RomanNumeral struct {
 	Value  int
@@ -34,4 +36,17 @@ func ConvertToRoman(n int) string {
 	}
 
 	return result.String()
+}
+
+func ConvertToArabic(r string) int {
+	var arabic int = 0
+
+	for _, numeral := range allRomanNumerals {
+		for strings.HasPrefix(r, numeral.Symbol) {
+			arabic += numeral.Value
+			r = strings.TrimPrefix(r, numeral.Symbol)
+		}
+	}
+
+	return arabic
 }
