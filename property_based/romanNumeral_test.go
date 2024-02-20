@@ -3,6 +3,7 @@ package propertybased
 import (
 	"fmt"
 	"testing"
+	"testing/quick"
 )
 
 var cases = []struct {
@@ -61,5 +62,17 @@ func TestFromRomanToArabic(t *testing.T) {
 				t.Errorf("got %q, wanted %q", got, test.Arabic)
 			}
 		})
+	}
+}
+
+func TestPropertiesOfConvertion(t *testing.T) {
+	assertion := func(arabic int) bool {
+		roman := ConvertToRoman(arabic)
+		fromRoman := ConvertToArabic(roman)
+		return fromRoman == arabic
+	}
+
+	if err := quick.Check(assertion, nil); err != nil {
+		t.Error("failed checks", err)
 	}
 }
