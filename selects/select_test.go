@@ -38,7 +38,7 @@ func TestRacer(t *testing.T) {
 		slowURL := slowServer.URL
 		fastURL := fastServer.URL
 
-		got, err := WebsiteRacer(slowURL, fastURL)
+		_, err := WebsiteRacer(slowURL, fastURL)
 
 		if err == nil {
 			t.Errorf("expected an error but dint get one")

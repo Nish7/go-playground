@@ -9,9 +9,7 @@ type result struct {
 
 // Channel Types:
 // Unbuffered Channels: These channels do not store any values. Sending a value **blocks** the sending goroutine until another goroutine receives the value from the channel, and vice versa for receiving.
-
 // Buffered Channels: Created with a buffer capacity. Sending is blocked only when the buffer is full. Similarly, receiving blocks only when the buffer is empty. They are initialized like ch := make(chan Type, capacity).
-
 func CheckWebsites(wc WebsiteChecker, urls []string) map[string]bool {
 
 	res := make(map[string]bool)
