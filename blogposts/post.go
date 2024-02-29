@@ -32,7 +32,9 @@ func newPost(postBody io.Reader) (Post, error) {
 }
 
 func readBody(scanner *bufio.Scanner) (body string) {
-	scanner.Scan() // skip the ---
+	scanner.Scan()
+	scanner.Scan()
+	scanner.Scan()
 
 	buf := bytes.Buffer{}
 
