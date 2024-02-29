@@ -26,13 +26,21 @@ func TestExpectError(t *testing.T) {
 func TestNewBlogPosts(t *testing.T) {
 	const (
 		firstBody = `Title: Post 1
-		Description: IDK`
+Description: IDK
+Tags: go, ts
+---
+Hello
+World`
 		secondBody = `Title: Post 2
-		Description: POP`
+Description: POP
+Tags: go, fs, ts, po
+---
+(.)(.)
+SMASH!`
 	)
 
 	fs := fstest.MapFS{
-		"hello_world.md":  {Data: []byte(firstBody)},
+		"hello world.md":  {Data: []byte(firstBody)},
 		"hello-world2.md": {Data: []byte(secondBody)},
 	}
 
@@ -43,7 +51,8 @@ func TestNewBlogPosts(t *testing.T) {
 	}
 
 	got := posts[0]
-	want := Post{Title: "Post 1", Description: "IDK"}
+	want := Post{Title: "Post 1", Description: "IDK", Tags: []string{"go", "ts"}, Body: `Hello
+World`}
 
 	assertPost(t, got, want)
 }

@@ -12,6 +12,7 @@ func NewPostsFromFS(fileSystem fs.FS) (posts []Post, err error) {
 	}
 
 	for _, f := range dir {
+
 		post, err := getPost(fileSystem, f.Name())
 
 		if err != nil {
