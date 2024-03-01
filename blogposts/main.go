@@ -1,13 +1,13 @@
-package cmd
+package main
 
 import (
-	"hello_world/blogposts"
+	"hello_world/blogposts/blogs"
 	"log"
 	"os"
 )
 
 func main() {
-	posts, err := blogposts.NewPostsFromFS(os.DirFS("posts"))
+	posts, err := blogs.NewPostsFromFS(os.DirFS("posts"))
 
 	if err != nil {
 		log.Fatal(err)

@@ -1,4 +1,4 @@
-package blogposts
+package blogs
 
 import (
 	"errors"

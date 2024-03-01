@@ -1,4 +1,4 @@
-package blogposts
+package blogs
 
 import (
 	"bufio"
@@ -31,14 +31,12 @@ func newPost(postBody io.Reader) (Post, error) {
 	}, nil
 }
 
-func readBody(scanner *bufio.Scanner) (body string) {
-	scanner.Scan()
-	scanner.Scan()
-	scanner.Scan()
-
+func readBody(scanner *bufio.Scanner) string {
 	buf := bytes.Buffer{}
 
-	for scanner.Scan() { // Scan() return a boolean, until it done
+	scanner.Scan()
+
+	for scanner.Scan() {
 		fmt.Fprintf(&buf, scanner.Text()+"\n")
 	}
 
