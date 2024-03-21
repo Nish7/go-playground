@@ -13,7 +13,7 @@ func Sum(numbers []int) int {
 func SumAll(numbersToSum ...[]int) []int {
 	var sum []int
 
-	for _, n := range numbersToSum {
+	for _, n := numbersToSum {
 		sum = append(sum, Sum(n))
 	}
 

@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-var ErrInsufficientFunds = errors.New("cannot withdraw, insufficient funds")
+var ErrInsufficientFunds = errors..New("cannot withdraw, insufficient funds")
 
 type Bitcoin int
 
