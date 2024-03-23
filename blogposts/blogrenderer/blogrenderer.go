@@ -1,25 +1,35 @@
 package blogrenderer
 
 import (
+	"embed"
 	"hello_world/blogposts/blogs"
 	"html/template"
 	"io"
 )
 
-const (
-	postTemplate = `<h1>{{.Title}}</h1><p>{{.Description}}</p>Tags: <ul>{{range .Tags}}<li>{{.}}</li>{{end}}</ul>`
+var (
+	//go:embed "templates/*"
+	postTemplates embed.FS
 )
 
-func Render(w io.Writer, p blogs.Post) error {
-	templ, err := template.New("blogs").Parse(postTemplate)
+type PostRenderer struct {
+	templ *template.Template
+}
+
+func NewPostRenderer() (*PostRenderer, error) {
+	templ, err := template.ParseFS(postTemplates, "templates/*.gohtml")
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	if err := templ.Execute(w, p); err != nil {
-		return err
-	}
+	return &PostRenderer{templ: templ}, nil
+}
 
-	return err
+func (pr *PostRenderer) Render(w io.Writer, p blogs.Post) error { // why pointer to a postRenderer, not a instance? --> why pointer reciever was used because of mutability
+	return pr.templ.ExecuteTemplate(w, "blog.gohtml", p)
+}
+
+func (pr *PostRenderer) RenderIndex(w io.Writer, p []blogs.Post) error {
+	return pr.templ.ExecuteTemplate(w, "index.gohtml", p)
 }

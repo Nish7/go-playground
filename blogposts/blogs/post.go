@@ -15,6 +15,10 @@ type Post struct {
 	Body        string
 }
 
+func (p Post) SanitisedTitle() string {
+	return strings.ToLower(strings.ReplaceAll(p.Title, " ", "-"))
+}
+
 func newPost(postBody io.Reader) (Post, error) {
 	scanner := bufio.NewScanner(postBody)
 
