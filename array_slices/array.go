@@ -1,11 +1,11 @@
 package array
 
 func Sum(numbers []int) int {
-	sum := 0 
+	sum := 0
 
 	for _, n := range numbers {
-		sum += n 
-	}  
+		sum += n
+	}
 
 	return sum
 }
@@ -13,7 +13,7 @@ func Sum(numbers []int) int {
 func SumAll(numbersToSum ...[]int) []int {
 	var sum []int
 
-	for _, n := numbersToSum {
+	for _, n := range numbersToSum {
 		sum = append(sum, Sum(n))
 	}
 
